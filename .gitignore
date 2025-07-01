@@ -1,0 +1,20 @@
+# macOS specific files
+.DS_Store
+
+# Python virtual environment and cache
+__pycache__/
+*.py[cod]
+.venv/
+
+# VSCode editor settings
+.vscode/
+
+# Secrets and environment variables
+*.env
+
+# Project-specific output files
+# Ignore everything in results and sources, except for the .gitkeep file
+results/*
+!results/.gitkeep
+sources/*
+!sources/.gitkeep
