@@ -11,22 +11,25 @@ Analysis_Th는 최신 LLM(Gemini, ChatGPT 등)을 활용하여 신학 텍스트�
 
 ## 1. 프로젝트 구조
 
-```
+```text
 Analysis_Th/
- ├─ results/            # Phase 결과·최종 보고서가 생성될 위치
- │   └─ .gitkeep
- ├─ sources/            # 분석 대상 텍스트 위치
- │   └─ .gitkeep
- ├─ templates/          # 모든 프롬프트·가이드
- │   ├─ main_prompt.md
- │   ├─ action.md
- │   ├─ CONFIGURATION_GUIDE.md
- │   ├─ PROMPT_COOKBOOK.md
- │   └─ ...
- ├─ run_analysis_workflow.py   # 전체 자동 실행
- ├─ compile_report.py          # Phase *.md → 최종 보고서
- ├─ config.yaml                # 가중치·방법론 기본값
- └─ README.md
+├─ results/            # 분석 결과물이 생성되는 폴더
+│  └─ .gitkeep
+├─ sources/            # 분석할 원문 텍스트를 넣는 폴더
+│  └─ .gitkeep
+├─ templates/          # 프롬프트 엔지니어링 템플릿
+│  ├─ action.md
+│  ├─ CONFIGURATION_GUIDE.md
+│  ├─ main_prompt.md
+│  └─ PROMPT_COOKBOOK.md
+├─ .env                # (API 키 등 비밀 정보 저장 - Git 무시됨)
+├─ .gitignore          # Git이 무시할 파일/폴더 목록
+├─ compile_report.py   # 중간 결과물을 최종 보고서로 컴파일
+├─ config.yaml         # 분석 가중치 등 전역 설정
+├─ explanation.md      # 초심자용 프로젝트 설명서
+├─ README.md           # 프로젝트 개요 및 사용법 (현재 파일)
+├─ requirements.txt    # 필요한 파이썬 라이브러리 목록
+└─ run_analysis_workflow.py # 전체 분석 워크플로우 자동 실행
 ```
 
 ---
