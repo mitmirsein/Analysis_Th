@@ -1,4 +1,4 @@
-### Phase 2 실행 지시 (정성 분석 – 핵심 개념·내용 구조)
+## Phase 2 실행 지시 (정성 분석 – 핵심 개념·내용 구조)
 
 **1. 전제 사항**
 
@@ -12,45 +12,48 @@
 * 핵심 개념 3–5개를 선정하고 언어학·신학사·문화 3층에서 분석한다.
 * 내용 구조를 거시·미시 수준으로 매핑하고, 수사 전략·저자 목소리를 규명한다.
 
-**3. 세부 요구 사항**
-**3-1. 핵심 개념 분석**
+### 3. 세부 요구 사항
+
+#### 3-1. 핵심 개념 분석
 
 * 각 개념은 원어(Unicode) 표기와 함께 제시한다.
 * 언어학 층위: 어원, 의미 변화, LXX · MT 차이, 신약 재인용 양상.
 * 신학사 층위: 교부 → 중세 → 종교개혁 → 현대 논의 흐름.
 * 문화 층위: 서구 전통, 한국/아시아 토착화, 종교간 대화 관점.
-**3-2. 내용 구조 분석**
+
+#### 3-2. 내용 구조 분석
+
 * 거시 구조: 명제–논증–결론 플로 차트 또는 서술 목록.
 * 미시 구조: 단락별 주장·근거·예시 연쇄 파악.
 * 수사 전략: 에토스·파토스·로고스, 키아즘·평행법 등.
 * 저자 목소리: 명시 ↔ 암묵 전제, 대화 상대, 교파적 위치.
 
-**4. 형식 지침**
+### 4. 형식 지침
 
-* 서문(2-3문장)에서 Phase 2 작업 범위와 `methodology_override` 적용 여부를 설명한다.
-* 이어서 **phase_results** YAML 블록을 출력하되 필수 필드는 다음과 같다.
+1. 서문(2–3문장)에서 Phase 2 작업 범위와 `methodology_override` 적용 여부를 설명한다.  
+2. 이어서 **phase_results** YAML 블록을 출력하되, 필수 필드는 다음과 같다.
 
-    ```yaml
-    phase_results:
-      phase_id: "2"
-      core_concepts:
-        linguistic_layer: [...]
-        historical_layer: [...]
-        cultural_layer: [...]
-      structural_elements: [...]
-      key_data:
-        summary_200_chars: ""
-      quality_check:
-        minimum_criteria_met: true/false
-        style_consistency: true/false
-        hallucination_check: true/false
-    ```
+```yaml
+phase_results:
+  phase_id: "2"
+  core_concepts:
+    linguistic_layer: []
+    historical_layer: []
+    cultural_layer: []
+  structural_elements: []
+  key_data:
+    summary_200_chars: ""
+  quality_check:
+    minimum_criteria_met: false
+    style_consistency: true
+    hallucination_check: true
+```
 
-* 각 분석 단락과 YAML 내부 설명 모두 평서문 종결어미(-이다, -한다, -하다)를 사용한다.
-* 모든 주장 뒤에 `[텍스트 기반]`, `[신학 일반]`, `[추론]` 태그를 부착한다.
-* YAML 뒤에 마지막 줄로 **"READY_FOR_2.5?"**만 단독 표기하여 사용자 승인을 기다린다.
+3. YAML 뒤 **단독 줄**에 `READY_FOR_2.5?` 만 출력 → 사용자 승인 대기.
+4. 각 분석 단락과 YAML 내부 설명 모두 평서문 종결어미(-이다, -한다, -하다)를 사용한다.
+5. 모든 주장 뒤에 `[텍스트 기반]`, `[신학 일반]`, `[추론]` 태그를 부착한다.
 
-**5. 품질 최소 기준 검증**
+### 5. 품질 최소 기준 검증
 
 * 핵심 개념 ≥ 3개, 각 개념마다 3층 분석 완결.
 * 구조 분석에 도식(ASCII 흐름도 또는 계층 목록) 포함.
@@ -58,17 +61,17 @@
 * 원어 표기 정확성(`korean_terminology_accuracy=true`).
 * 모든 체크 항목 충족 시 `minimum_criteria_met=true`, 아니면 false로 표기하고 경고문 서술.
 
-**6. 예외·토큰 관리**
+### 6. 예외·토큰 관리
 
 * 예상 토큰 과다 시 Phase 2-A(핵심 개념)와 2-B(내용 구조)로 분할하고 파일명 규칙 `[date]_[id]_phase2_a.md` 적용.
 * 분할 실행 시 2-A 종료 시점에 "CONTINUE_2B?" 신호를 출력하여 사용자 확인 후 2-B 진행.
 
 ---
 **프롬프트 종료 전 점검 사항:**
-- **문체:** 모든 문장은 평서문 종결어미로 끝나는가?
-- **누락:** YAML 및 필수 항목은 모두 완료되었는가?
-- **오류:** 할루시네이션, 인용 오류가 없는가?
-- **사용자 승인:** 결과물 마지막에 "READY_FOR_2.5?"를 포함하여 검토 요청을 보냈는가?
+* **문체:** 모든 문장은 평서문 종결어미로 끝나는가?
+* **누락:** YAML 및 필수 항목은 모두 완료되었는가?
+* **오류:** 할루시네이션, 인용 오류가 없는가?
+* **사용자 승인:** 결과물 마지막에 "READY_FOR_2.5?"를 포함하여 검토 요청을 보냈는가?
 
 ---
 **위 지침을 즉시 이행하여 Phase 2 결과를 서술 → YAML → "READY_FOR_2.5?" 순으로 출력하라.**

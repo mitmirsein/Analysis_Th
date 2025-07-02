@@ -4,6 +4,7 @@
 # Python virtual environment and cache
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .venv/
 
 # VSCode editor settings

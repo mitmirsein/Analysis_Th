@@ -1,5 +1,6 @@
 # config.yaml
 # Analysis_Th v1.1 공통 설정 파일
+# LLM: gemini-2.5-pro
 
 # ==========================================================
 # 1. 프로젝트 전역 설정 (Global Settings)
@@ -7,17 +8,36 @@
 # ==========================================================
 project_settings:
   # manual: 모든 Phase 후 승인 | auto: 자동 통과 | conditional: 아래 rules 따름
+  # 승인 모드: 각 Phase 완료 후 사용자 확인을 받을지 결정합니다.
+  # - "auto": 모든 단계를 자동으로 통과시킵니다. (CI/CD, 배치 작업용)
+  # - "manual": 모든 단계가 끝날 때마다 사용자에게 계속할지 묻습니다.
+  # - "conditional": 아래 `conditional_rules`에 정의된 규칙에 따라 선택적으로 묻습니다.
   approval_mode: "conditional"
+  
+  # 'conditional' 모드일 때만 적용되는 규칙
+  # require_user: true로 설정된 Phase에서만 승인을 요청합니다.
   conditional_rules:
     - phase_id: "0"
       require_user: true
+    # - phase_id: "2.5" # 예: 품질 게이트 직후에도 확인을 받고 싶을 때 추가
+    #   require_user: true
   
   # LLM 모델 및 API 관련
-  model_name: "gemini-1.5-pro-latest"
+  # 사용할 Google Gemini 모델의 이름을 지정합니다.
+  # 유효한 모델 이름인지 확인하세요. (예: "gemini-1.5-pro-latest")
+  model_name: "gemini-2.5-pro"
+  
+  # LLM API 호출 실패 시 최대 재시도 횟수입니다.
   max_retries: 3
+  # max_output_tokens: 8192 # 예: 최대 출력 토큰을 제한하고 싶을 때 사용
   
   # 실행 제어
-  timeout_seconds: 3600
+  # LLM API 호출 시 타임아웃 시간(초)입니다.
+  # 너무 긴 분석이 멈추는 것을 방지합니다. (참고: SDK의 실제 한도는 이보다 낮을 수 있음)
+  timeout_seconds: 600
+  
+  # 로그 출력 레벨을 지정합니다.
+  # DEBUG, INFO, WARNING, ERROR 중 하나를 선택합니다.
   logging_level: "INFO" # DEBUG, INFO, WARNING, ERROR
 
 # ==========================================================
@@ -26,15 +46,21 @@ project_settings:
 # ==========================================================
 analysis_parameters:
   # weighting_scheme 값의 합은 1.0이어야 합니다.
+  # Phase 1 정량 분석의 가중치입니다.
+  # 각 지표의 중요도를 나타내며, 합계는 1.0이 되어야 합니다.
+  # (참고: 합이 1.0이 아니면 스크립트가 경고 후 자동 정규화합니다.)
   weighting_scheme:
     frequency:          0.40   # 텍스트 표면 빈도
     network_centrality: 0.35   # 개념 네트워크 중심성
     citation_count:     0.25   # 외부 인용 빈도
 
-  # Phase 0 결과 대신 강제로 적용할 방법론을 지정합니다.
+  # Phase 0의 자동 추천 대신 특정 방법론을 강제로 지정하려면 값을 입력합니다.
+  # 비워두면 Phase 0에서 판단한 recommended_methodology 를 사용합니다.
   methodology_override:
-    primary:   ""              # 예) "서사적 해석"
-    auxiliary: []              # 예) ["실천신학적 검토"]
+    primary: "역사신학적 검토"   # 예) "서사적 해석"
+    auxiliary: []               # 예) ["실천신학적 검토"]
 
   # Phase 2.5 품질 게이트를 무시할지 여부
+  # Phase 2.5 품질 게이트의 작동 여부를 결정합니다.
+  # true로 설정하면, 수렴도 등급이 '미흡' 이하라도 워크플로우가 중단되지 않고 계속 진행됩니다.
   override_gate: false

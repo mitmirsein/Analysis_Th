@@ -32,36 +32,22 @@
 
 `main_prompt.md`의 `Ⅴ. 가중치 기반 통합 프레임워크` 섹션에서 이 설정을 변경할 수 있습니다.
 
-### 가중치 설정 예시
+### 가중치 설정 예시  (합계 = 1.0)
 
 * **기본 설정 (균형 잡힌 분석):**
 
-    ```yaml
-    weighting_scheme:
-      frequency: 0.40
-      network_centrality: 0.35
-      citation_count: 0.25
-    ```
+```yaml
+weighting_scheme:
+  frequency: 0.40
+  network_centrality: 0.35
+  citation_count: 0.25
+```
 
-* **개념의 '관계'에 집중하는 경우 (개념사 연구):**
-    * `network_centrality` (개념 네트워크 중심성)의 가중치를 높입니다.
+* **개념의 '관계'(개념사 연구)에 집중**  
+  `network_centrality`(개념 네트워크 중심성)의 가중치를 높입니다.
 
-    ```yaml
-    weighting_scheme:
-      frequency: 0.25
-      network_centrality: 0.50
-      citation_count: 0.25
-    ```
-
-* **저자의 '영향' 관계에 집중하는 경우 (지성사 연구):**
-    * `citation_count` (인용 빈도)의 가중치를 높입니다.
-
-    ```yaml
-    weighting_scheme:
-      frequency: 0.30
-      network_centrality: 0.20
-      citation_count: 0.50
-    ```
+* **저자의 '영향'(지성사 연구)에 집중**  
+  `citation_count`(인용 빈도)의 가중치를 높입니다.
 
 > **사용자 역할:** 분석을 시작하기 전, `main_prompt.md`의 가중치 설정을 자신의 연구 질문에 맞게 수정합니다. 이 설정은 **Phase 2.5 (수렴도 평가)**의 결과에 직접적인 영향을 미칩니다.
 
@@ -71,7 +57,7 @@
 
 본 워크플로우는 분석의 신뢰도를 보장하기 위해 자동화된 '품질 게이트'를 포함하고 있습니다. 가장 중요한 게이트는 **Phase 2.5 (수렴도 평가)** 단계에 있습니다.
 
-* **핵심 조건:** `main_prompt.md`에 명시된 바와 같이, **Phase 2.5의 수렴도 평가 종합 등급이 '미흡' 또는 '취약'으로 나올 경우, 워크플로우는 Phase 3으로 자동으로 진행되지 않고 사용자에게 재검토를 요청합니다.**
+* **핵심 조건:** `main_prompt.md`에 명시된 바와 같이, **Phase 2.5 수렴도 평가 종합 등급이 '미흡' 이하이고 `override_gate=false`일 때** 워크플로우는 Phase 3으로 진행되지 않고 사용자 승인을 요청합니다.
 
 * **의미:** 이는 AI가 수행한 정성적 해석(Phase 2)이 객관적 데이터(Phase 1)와 심각하게 불일치함을 의미합니다. 이 상태에서 분석을 계속 진행하면, 잘못된 해석 위에 논리를 쌓아 올리는 '사상누각'이 될 위험이 있습니다.
 
@@ -89,9 +75,9 @@
 
 ### 조정 가능한 주요 파라미터
 
-* `weighting_scheme.[지표]`: 정량 분석 지표의 가중치를 조정합니다. (예: `weighting_scheme.network_centrality`)
-* `methodology_override.primary`: 주된 분석 방법론을 강제로 지정합니다.
-* `override_gate`: 품질 게이트(Phase 2.5)의 작동을 무시하고 다음 단계로 강제 진행시킬지 여부를 결정합니다. (기본값: `false`)
+* `weighting_scheme.<지표>` – 정량 분석 지표 가중치 (예: `weighting_scheme.network_centrality`)
+* `methodology_override.primary` – 주된 분석 방법론 강제 지정
+* `override_gate` – 품질 게이트 무시 여부 (config 기본값: `false`)
 
 ### 명령어 구문 및 예시
 
@@ -101,7 +87,7 @@
     > `Phase 2.5의 수렴도 등급이 '미흡'으로 나왔네요. 개념 간의 관계를 더 중요하게 보기 위해, weighting_scheme.network_centrality=0.6, weighting_scheme.frequency=0.2 로 설정해서 Phase 2.5를 다시 실행해주세요.`
 
 * **예시 2: 분석 방법론 강제 지정**
-    > `Phase 0에서 '역사신학적 검토'를 추천했지만, 이번에는 methodology_override.primary="실천신학적 검토" 로 Phase 3를 진행하고 싶습니다.`
+    > `Phase 0에서 '역사신학적 검토'를 추천했지만, 이번에는 `methodology_override.primary="실천신학적 검토"` 로 Phase 3를 진행하고 싶습니다.`
 
 * **예시 3: 품질 게이트 무시하고 강제 진행**
     > `수렴도가 낮은 것을 인지하고 있습니다. 연구 목적상 그대로 진행해야 하니, override_gate=true 로 설정하고 Phase 3를 실행해주세요.`
