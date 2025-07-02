@@ -1,12 +1,16 @@
 # Analysis_Th: AI-기반 신학 텍스트 심층 분석 프레임워크  
-*(Last updated: 2025-07-01 · v4.2 / v5.2 정식 지원)*  
+*(Last updated: 2025-07-02 · v1.1 정식 지원)*  
 
 ---
 
 **Overview:**  
-Analysis_Th는 최신 LLM(Gemini, ChatGPT, Claude 등)을 활용하여 신학 텍스트를 다단계로 분석-검증-보고하는  
-"프롬프트 엔지니어링 + 파이썬 자동화" 프레임워크입니다.  
-이 프레임워크는 웹 UI를 통해 대화형으로 사용하거나, 제공되는 파이썬 스크립트로 전체 과정을 완전 자동화할 수 있습니다.
+Analysis_Th는 최신 LLM을 활용하여 신학 텍스트를 다단계로 분석-검증-보고하는 "프롬프트 엔지니어링 + 파이썬 자동화" 프레임워크입니다. 이 프레임워크는 웹 UI를 통해 대화형으로 사용하거나, 제공되는 파이썬 스크립트로 전체 과정을 완전 자동화할 수 있습니다.
+
+이 시스템의 핵심 특징은 **적응형 분석(Adaptive Analysis)**과 **사용자 중심의 미세 조정(Fine-tuning)**입니다.
+
+적응형 분석: Phase 0에서 AI가 텍스트의 장르와 복잡도를 스스로 진단하고, 그 결과에 따라 후속 분석 단계의 깊이와 초점을 자동으로 조절합니다.
+미세 조정: 사용자는 실행 전 config.yaml 파일을 통해 분석 가중치, 승인 절차 등 워크플로우의 모든 측면을 자신의 연구 목적에 맞게 정밀하게 제어할 수 있습니다.
+이 두 가지 특징이 결합되어 텍스트에 최적화된 맞춤형 보고서를 생성합니다.
 
 > **Note:**  
 > 이 프로젝트는 인문학에 정량적 분석과 정성적 분석이 결합되면 더욱 단단한 연구를 할 수 있다고 생각하는, 그리고
@@ -29,15 +33,13 @@ Analysis_Th/
 │  ├─ CONFIGURATION_GUIDE.md
 │  ├─ main_prompt.md
 │  └─ PROMPT_COOKBOOK.md
-├─ .env                # (API 키 등 비밀 정보 저장 - Git 무시됨)
-├─ .gitignore          # Git이 무시할 파일/폴더 목록
 ├─ compile_report.py   # 중간 결과물을 최종 보고서로 컴파일
-├─ config.yaml         # 분석 가중치 등 전역 설정
-├─ explanation.md      # 초심자용 프로젝트 설명서
+├─ config.yaml         # 분석 가중치, 승인 모드 등 프로젝트 전역 설정을 중앙에서 관리
+├─ explanation_auto.md   # 자동화 스크립트 실행 가이드
+├─ explanation_manual.md # 웹 UI 수동 실행 가이드
 ├─ README.md           # 프로젝트 개요 및 사용법 (현재 파일)
 ├─ requirements.txt    # 필요한 파이썬 라이브러리 목록
 └─ run_analysis_workflow.py # 전체 분석 워크플로우 자동 실행
-
 
 ---
 
@@ -128,19 +130,52 @@ python compile_report.py welker_creation --results_path results
 
 ---
 
-## 4. config.yaml 커스터마이징
+## 4. config.yaml 커스터마이징 (핵심)
+
+`config.yaml` 파일은 프로젝트 전체의 동작 방식을 제어하는 **중앙 설정 파일**입니다. 이 파일을 수정하여 워크플로우의 실행 방식, 분석 파라미터, 승인 절차 등을 유연하게 조정할 수 있습니다.
+
+### 설정 계층 구조
+설정은 다음 우선순위에 따라 적용됩니다. (높은 순서대로)
+1.  **CLI 인자:** `run_analysis_workflow.py` 실행 시 `--no-confirm` 같은 플래그
+2.  **`config.yaml`:** 사용자가 직접 정의한 값
+3.  **코드 기본값:** 스크립트 내에 하드코딩된 기본 설정
 
 ```yaml
-weighting_scheme:
-  frequency:          0.40
-  network_centrality: 0.35
-  citation_count:     0.25
+# config.yaml 예시
+# ==========================================================
+# 1. 프로젝트 전역 설정 (Global Settings)
+# ==========================================================
+project_settings:
+  # manual: 모든 Phase 후 승인 | auto: 자동 통과 | conditional: 아래 rules 따름
+  approval_mode: "conditional"
+  conditional_rules:
+    - phase_id: "0"
+      require_user: true
+  
+  # LLM 모델 및 API 관련
+  model_name: "gemini-1.5-pro-latest"
+  max_retries: 3
+  
+  # 실행 제어
+  logging_level: "INFO" # DEBUG, INFO, WARNING, ERROR
 
-methodology_override:
-  primary:   ""          # 예) "서사적 해석"
-  auxiliary: []          # 예) ["실천신학적 검토"]
+# ==========================================================
+# 2. 분석 파라미터 (Analysis Parameters)
+# ==========================================================
+analysis_parameters:
+  # 정량 분석 가중치 (합계 1.0 권장)
+  weighting_scheme:
+    frequency:          0.40
+    network_centrality: 0.35
+    citation_count:     0.25
 
-override_gate: false     # Phase 2.5 '미흡/취약' 차단 무시 여부
+  # Phase 0 결과 대신 강제로 적용할 방법론
+  methodology_override:
+    primary:   ""
+    auxiliary: []
+
+  # Phase 2.5 품질 게이트(blocked)를 무시하고 강제 진행할지 여부
+  override_gate: false
 ```
 
 값을 바꾼 뒤 저장하면 다음 실행부터 자동 반영된다.  
@@ -148,27 +183,7 @@ override_gate: false     # Phase 2.5 '미흡/취약' 차단 무시 여부
 
 ---
 
-## 5. Git 관리 가이드
-
-```
-# .gitignore 핵심 항목
-results/*
-!results/.gitkeep
-sources/*
-!sources/.gitkeep
-__pycache__/
-*.py[cod]
-.venv/
-.vscode/
-*.env
-```
-
-* `results/` 및 `sources/` 는 빈 폴더만 버전 관리하고 산출물·원문 텍스트는 제외.  
-* API Key, 가상환경, 캐시 파일도 커밋하지 않는다.
-
----
-
-## 6. FAQ (요약)
+## 5. FAQ (요약)
 
 | 질문 | 답변 |
 |------|------|

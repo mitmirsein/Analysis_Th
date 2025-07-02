@@ -1,11 +1,12 @@
 ```markdown
-## Analysis_Th 워크플로우 — 프롬프트 요리책 v 2.0  
-*(Last updated: 2025-07-01 · 반영 사항: 초심자 가중치 가이드, 프리셋·민감도 실행, 오류 대응, 10분 퀵 스타트)*  
+## Analysis_Th 워크플로우 — 프롬프트 요리책 v 1.1
+*(Last updated: 2025-07-02 · 반영 사항: Project v1.1 동기화, `config.yaml` 연동, 대화형 UI 중심 시나리오 강화)*
 
 ---
 
 **Cookbook 개요:**  
-이 문서는 메인 프롬프트 v 4.2, 실행 템플릿 v 5.2, CONFIGURATION_GUIDE.md를 이미 업로드한 사용자가 웹 UI 대화창에서 Analysis_Th 워크플로우를 능동적으로 조정할 때 활용하는 "보조 프롬프트 모음집"이다. 각 프롬프트는 빈번도·위험도 태그를 달아 빠르게 찾을 수 있게 하였고, 초심자가 어렵게 느끼는 가중치·게이트·오류 처리 과정을 최소한의 입력으로 해결할 수 있도록 설계하였다.
+이 문서는 `run_analysis_workflow.py` 스크립트가 아닌, **웹 UI 대화창**에서 Analysis_Th 워크플로우를 수동으로 진행하고 싶을 때 사용하는 "보조 프롬프트 모음집"입니다.
+기본 설정은 `config.yaml`에서 가져오며, 이 요리책의 프롬프트들은 분석 세션 중에 실시간으로 설정을 조정하거나 특정 작업을 요청할 때 사용됩니다.
 
 ---
 
@@ -23,9 +24,9 @@
 
 **1. 세션 시작 전: 설정 확인  [#diagnostic]**
 
-***목적:*** AI가 main_prompt, execution_template, CONFIG 파일을 올바르게 인식했는지 초기 검증을 수행한다.  
+***목적:*** AI가 `config.yaml`의 기본 설정을 올바르게 인식했는지 초기 검증을 수행합니다.
 ```plaintext
-업로드한 main_prompt_v4_2.md와 CONFIG의 weighting_scheme·methodology_override 값을 모두 로드했는지 확인하고, 현재 세션 파라미터 상태를 표 형식으로 요약해 주세요.
+현재 세션에 적용된 `config.yaml`의 주요 설정값(model_name, approval_mode, weighting_scheme 등)을 확인하고, 표 형식으로 요약해 주세요.
 ```
 
 이 프롬프트를 통해 모델 버전·가중치·게이트 설정 누락을 조기에 발견할 수 있다.

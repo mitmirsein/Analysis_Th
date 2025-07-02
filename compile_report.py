@@ -1,7 +1,7 @@
 # compile_report.py
 """
-Analysis_Th v4.2 · v5.2  ─ Phase 결과 → 최종 보고서 컴파일러
-※ gate_status, Phase 2.5, Executive Summary 지원
+Analysis_Th v1.1  ─ Phase 결과 → 최종 보고서 컴파일러
+※ gate_status, Phase 2.5, Executive Summary, config.yaml 기반 승인 절차 지원
 """
 
 import argparse, logging, re, sys
