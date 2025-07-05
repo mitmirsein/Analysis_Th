@@ -45,6 +45,7 @@ phase_results:
     summary_200_chars: ""
   quality_check:
     minimum_criteria_met: false
+    completeness: true
     style_consistency: true
     hallucination_check: true
 ```

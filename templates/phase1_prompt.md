@@ -49,6 +49,7 @@ Phase 1의 두 핵심 항목—0) **정황 분석**과 1) **정량 분석**—�
        summary_200_chars: ""
      quality_check:
        minimum_criteria_met: false   # auto-calc
+       completeness: true
    ```
 
 3. YAML 블록 뒤 **단독 줄**에 `NEXT_PHASE?` 만 출력 → 사용자 승인·파라미터 조정 기회 제공.  

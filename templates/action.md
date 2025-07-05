@@ -23,6 +23,7 @@
 phase_results:
   phase_id: "0"            # 0, 1, 2, 2.5, 3, 4
   items_completed: []
+  completeness: true
 
   # Phase 0 전용
   text_profile:

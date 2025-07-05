@@ -54,6 +54,7 @@ phase_results:
     summary_200_chars: ""
   quality_check:
     minimum_criteria_met: false
+    completeness: true
 ```
 
 3. YAML 뒤 **단독 줄**에 `PROCEED_PHASE4?` 만 출력 → 사용자 승인·파라미터 조정 기회 제공.
