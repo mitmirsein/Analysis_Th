@@ -185,28 +185,27 @@ class Workflow:
 
         parts = [cfg_block, self.main_prompt, self.action_prompt]
 
-        # Phase 0의 경우 소스 파일을 처리
-        if not deps:
-            source_content = ""
-            if self.src.suffix == ".json":
-                try:
-                    # PyYAML은 JSON을 직접 파싱할 수 있습니다.
-                    json_data = yaml.safe_load(read(self.src))
-                    # LLM이 이해하기 쉽도록 예쁘게 포맷된 YAML 문자열로 변환합니다.
-                    source_content = yaml.dump(
-                        json_data, allow_unicode=True, sort_keys=False, indent=2
-                    )
-                    logging.info(".json 소스 파일을 파싱하여 YAML 형식으로 변환했습니다.")
-                except yaml.YAMLError as e:
-                    logging.error(".json 파일 파싱 실패: %s. 원본 텍스트로 처리합니다.", e)
-                    source_content = read(self.src)  # 파싱 실패 시 원본 텍스트로 대체
-            else:  # .txt, .md 등 다른 텍스트 파일
-                source_content = read(self.src)
-            parts.append(f"--- SOURCE ---\n{source_content}")
-        # 다른 Phase의 경우 의존성 파일을 처리
-        else:
-            for d in deps:
-                parts.append(f"--- P{d.replace('_', '.')} ---\n{read(self.pth[d])}")
+        # 1. 원본 소스 텍스트를 항상 포함시켜, 각 Phase가 분석 대상을 명확히 인지하도록 합니다.
+        source_content = ""
+        if self.src.suffix == ".json":
+            try:
+                # PyYAML은 JSON을 직접 파싱할 수 있습니다.
+                json_data = yaml.safe_load(read(self.src))
+                # LLM이 이해하기 쉽도록 예쁘게 포맷된 YAML 문자열로 변환합니다.
+                source_content = yaml.dump(
+                    json_data, allow_unicode=True, sort_keys=False, indent=2
+                )
+                logging.info(".json 소스 파일을 파싱하여 YAML 형식으로 변환했습니다.")
+            except yaml.YAMLError as e:
+                logging.error(".json 파일 파싱 실패: %s. 원본 텍스트로 처리합니다.", e)
+                source_content = read(self.src)  # 파싱 실패 시 원본 텍스트로 대체
+        else:  # .txt, .md 등 다른 텍스트 파일
+            source_content = read(self.src)
+        parts.append(f"--- SOURCE ---\n{source_content}")
+
+        # 2. 이전 단계(Phase)의 결과물을 의존성에 따라 추가합니다.
+        for d in deps:
+            parts.append(f"--- P{d.replace('_', '.')} ---\n{read(self.pth[d])}")
 
         parts.append(f"\nPhase {phase_key.replace('_', '.')}을 즉시 수행하라.")
         return "\n\n".join(parts)
