@@ -57,8 +57,8 @@ analysis_parameters:
   # Phase 0의 자동 추천 대신 특정 방법론을 강제로 지정하려면 값을 입력합니다.
   # 비워두면 Phase 0에서 판단한 recommended_methodology 를 사용합니다.
   methodology_override:
-    primary: "신약주석학적 해석"   # 예) "서사적 해석"
-    auxiliary: ["성서신학적 검토"]               # 예) ["실천신학적 검토"]
+    primary: ""   # 예) "서사적 해석"
+    auxiliary: []               # 예) ["실천신학적 검토"]
 
   # Phase 2.5 품질 게이트를 무시할지 여부
   # Phase 2.5 품질 게이트의 작동 여부를 결정합니다.
